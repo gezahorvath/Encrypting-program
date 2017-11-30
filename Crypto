@@ -1,0 +1,80 @@
+import java.util.Scanner;
+public class EDX {//Project Crypto
+    public static void main(String[] args) {
+
+        Scanner input=new Scanner(System.in);
+
+        System.out.print("Insert the text you want to Encrypt: ");
+        String InputText=input.nextLine();//getting user text
+        System.out.println("**********");
+        System.out.print("How many characters with, you want to shift your text? \\Choose between 1-25\\: ");
+        int Shiftnumber=input.nextInt(); //getting shift number
+        System.out.println("**********");
+        System.out.println("Your text will be groupified, how many characters you want in a group? ");
+        System.out.println("The characters that doesn't exist will be shown as \"x\"");
+        int CharactersinGroup=input.nextInt();//getting char in a group
+
+        String[] Punctuation = {".", ",", ";", ":", "'", "\"", "!", "?", "(", ")"," "};
+
+        String Normalizedtext = Normalize(InputText,Punctuation);
+
+        String Encryptedtext = Caesarify(Normalizedtext,Shiftnumber);
+
+        String GroupifiedText=Groupify(Encryptedtext,CharactersinGroup);
+
+
+        System.out.println(GroupifiedText);
+
+    }
+    public static String Normalize(String NotNormalText,String[] Punc) {//remove punctuation and capitalize all characters
+
+        for (int index=0;index<Punc.length;index++){
+            NotNormalText = NotNormalText.replace(Punc[index],"");
+        }
+        NotNormalText=NotNormalText.toUpperCase();
+        return NotNormalText;
+
+    }
+    public static String Caesarify(String text,int shift) {//shift every characters in the text with the "shift" number away
+        int start = 0;
+        String CRYPTED = "";
+        char currChar;
+        int v= shift-1;
+
+
+        if (shift > 0 && shift<26){
+            for (int index = 0; index <= text.length() - 1; index++) {
+                start = (int)((text.charAt(index)>=90-v)?text.charAt(index)-26:text.charAt(index)) + shift;
+                currChar = (char) start;
+                CRYPTED = CRYPTED + currChar;
+            }
+        } else if (shift<0 && shift>-26)
+            for (int index = 0; index<= text.length() -1; index++) {
+                start = (int)((text.charAt(index)<67)?text.charAt(index)+26:text.charAt(index)) + shift ;
+                currChar = (char) start;
+                CRYPTED = CRYPTED + currChar;
+            }
+        return CRYPTED;
+    }
+    public static String Groupify(String Crypted, int charingroup){//split the encrypted text into groups, the characters in a group is char in group
+        String Groupedtext="";
+
+        if ((Crypted.length()%charingroup)==0){
+            for (int x=0;x<=Crypted.length()-charingroup;x+=charingroup) {
+                Groupedtext=Groupedtext +  Crypted.substring(x, x + charingroup) + " ";
+            }
+
+        }else if ((Crypted.length()%charingroup)!=0){
+            for (int x=0;x<=Crypted.length()-charingroup;x+=charingroup) {
+                Groupedtext=Groupedtext+Crypted.substring(x, x + charingroup) + " ";
+            }
+            Groupedtext=Groupedtext+Crypted.substring((Crypted.length()-Crypted.length()%charingroup),Crypted.length());
+
+            for (int x=0;x<charingroup-Crypted.length()%charingroup;x++) {
+                Groupedtext=Groupedtext+"x";
+            }
+        }
+        return Groupedtext;
+    }
+
+}
